@@ -2,19 +2,10 @@
     require_once('database.php');
 
   
-//Set search term or hard-code the parameter value
- $categoryID = 1;
-
- $query = "SELECT categoryName FROM categories WHERE 
- categoryID = ?";
- $stmt = $conn->prepare($query);
- $stmt->bind_param('s', $categoryID);
- $stmt->execute();
-
- $stmt->store_result();
- //store result fields in variables
- $stmt->bind_result($categoryName);
- 
+    // Get customers for selected category
+    $query = "SELECT firstName, lastName FROM customers order by lastName;";
+    //Result set
+    $customers = $conn->query($query);
 ?>
 <!DOCTYPE html>
 <html>
@@ -35,23 +26,22 @@
 
     <div id="main">
         
-        <h1>Category List</h1>
+        <h1>Product List</h1>
 
         <div id="content">
-            <!-- display a table of categories -->
+            <!-- display a table of products -->
             <table>
                 <tr>
-                    <th>Category ID</th>
-                    <th>Category Name</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
                 </tr>
-               <?php while ($stmt->fetch()){ ?>
-               <tr>
-                   <td><?php echo $categoryID; ?> </td>
-                   <td><?php echo $categoryName; ?> </td>
-               </tr>
-               <?php }
-               $stmt->free_result();
-               $conn->close();?>
+                <?php foreach ($customers as $customer) : ?>
+                <tr>
+                    <td><?php echo $customer['firstName']; ?></td>
+                    <td><?php echo $customer['lastName']; ?></td>
+                    
+                </tr>
+                <?php endforeach; ?>
             </table>
         </div>
     </div>
